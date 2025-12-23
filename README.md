@@ -128,6 +128,39 @@ All requests should be sent to the **API Gateway** (`http://localhost:8080`).
 
 ---
 
+## 🐳 Docker Cheat Sheet
+
+Essential commands for managing the microservices environment.
+
+### 🔄 General Management (All Services)
+
+| Action          | Command                                         | Description                                         |
+| :-------------- | :---------------------------------------------- | :-------------------------------------------------- |
+| **Start All**   | `docker-compose up -d --build`                  | Builds and starts all services in the background.   |
+| **Stop All**    | `docker-compose down`                           | Stops and removes all containers and networks.      |
+| **Restart All** | `docker-compose restart`                        | Restarts all running containers.                    |
+| **View Logs**   | `docker-compose logs -f`                        | Follows logs from all services in real-time.        |
+| **Clean Build** | `docker-compose up -d --build --force-recreate` | Forces a full rebuild and recreation of containers. |
+
+### 🎯 Individual Service Management
+
+Replace `<service_name>` with: `api-gateway`, `auth-service`, `user-service`, `task-service`, `notification-service`, or `frontend`.
+
+| Action               | Command                                 |
+| :------------------- | :-------------------------------------- |
+| **Start Specific**   | `docker-compose up -d <service_name>`   |
+| **Restart Specific** | `docker-compose restart <service_name>` |
+| **Stop Specific**    | `docker-compose stop <service_name>`    |
+| **View Logs**        | `docker-compose logs -f <service_name>` |
+| **Shell Access**     | `docker-compose exec <service_name> sh` |
+
+### 🛠️ Common Maintenance
+
+- **Prune System**: `docker system prune -a` (Caution: deletes all unused images and stopped containers).
+- **Check Status**: `docker-compose ps` (Lists running containers and ports).
+
+---
+
 ## 🐛 Troubleshooting
 
 - **Build Failures**: If `docker-compose` fails, try running `docker system prune` to clear cache and retry.
