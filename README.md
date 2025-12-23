@@ -1,55 +1,139 @@
-# Microservices Mini SaaS Platform
+# 🏗️ Microservices Mini SaaS Platform
 
-A comprehensive full-stack application demonstrating microservices architecture using Node.js, TypeScript, and React.
+A production-grade, full-stack application designed to demonstrate a robust **Microservices Architecture**. It features a modern **React** frontend communicating with a distributed **Node.js** backend via an **API Gateway**, fully containerized with **Docker**.
 
-## Architecture
+## 🌟 Key Features
 
-This project mimics a real-world SaaS platform with the following components:
+- **Microservices Architecture**: Independent services for Auth, User Management, Tasks, and Notifications.
+- **API Gateway Pattern**: Single entry point using `http-proxy-middleware` to route requests.
+- **Containerization**: Full `docker-compose` setup for one-command startup.
+- **Authentication**: Secure JWT-based auth flow with password hashing (bcrypt).
+- **Event-Driven Communication**: Asynchronous messaging simulation between services.
+- **Modern Frontend**: React, TypeScript, Tailwind CSS, and Vite.
+- **Type Safety**: End-to-end TypeScript implementation.
 
-- **Frontend**: React (TypeScript, Vite, Tailwind) - The user interface.
-- **API Gateway**: Single entry point that routes requests to backend services.
-- **Auth Service**: Handles user registration and authentication (JWT).
-- **User Service**: Manages user profiles.
-- **Task Service**: Core domain service for managing tasks/projects.
-- **Notification Service**: Asynchronous service listening for system events.
+---
 
-### Communication
+## 🏛️ Architecture Overview
 
-- **Synchronous**: Frontend -> API Gateway -> Generic Service (HTTP/REST)
-- **Asynchronous**: Services emit events (simulated or real message queue) --> Notification Service
+The system is split into logical domains. The **Frontend** never communicates directly with internal services; all traffic flows through the **API Gateway**.
 
-## Prerequisites
+```ascii
+                                   +-------------------+
+                                   |   React Frontend  |
+                                   |  (localhost:3000) |
+                                   +---------+---------+
+                                             |
+                                    HTTP / API Calls
+                                             |
+                                   +---------v---------+
+                                   |    API Gateway    |
+                                   |  (localhost:8080) |
+                                   +----+----+----+----+
+                                        |    |    |
+          +-----------------------------+    |    +-----------------------------+
+          |                                  |                                  |
++---------v---------+              +---------v---------+              +---------v---------+
+|    Auth Service   |              |    User Service   |              |    Task Service   |
+|  (localhost:3001) |              |  (localhost:3002) |              |  (localhost:3003) |
++-------------------+              +-------------------+              +---------+---------+
+                                                                                |
+                                                                          Async Event
+                                                                         (Simulated)
+                                                                                |
+                                                                      +---------v---------+
+                                                                      | Notification Svc  |
+                                                                      |  (localhost:3004) |
+                                                                      +-------------------+
+```
 
-- Docker Desktop
-- Node.js (v18+) (for local development outside Docker)
+---
 
-## Getting Started
+## 🚀 Getting Started
 
-1. **Clone the repository** (if you haven't already)
-2. **Run with Docker Compose**
+### Prerequisites
 
-   ```bash
-   docker-compose up --build
-   ```
+- **Docker Desktop** (Required)
+- **Node.js v18+** (Optional, for local dev without Docker)
 
-   This will start all services.
+### Installation & Run
 
-3. **Access the Application**
-   - Frontend: http://localhost:3000
-   - API Gateway: http://localhost:8080
+1.  **Clone the Repository**
 
-## Service Details
+    ```bash
+    git clone <repository-url>
+    cd <repository-folder>
+    ```
 
-| Service | Port | Description |
-|Col1|Col2|Col3|
-|---|---|---|
-| Frontend | 3000 | React UI |
-| API Gateway | 8080 | Entry point |
-| Auth Service | 3001 | Authentication |
-| User Service | 3002 | User Profiles |
-| Task Service | 3003 | Task Management |
-| Notification Service | 3004 | Async Notifications |
+2.  **Start with Docker Compose**
+    The entire system is orchestrated with Docker. Run:
 
-## Development
+    ```bash
+    docker-compose up --build
+    ```
 
-Each service acts as a standalone project. You can navigate to `services/<service-name>` and run `npm install` and `npm run dev` to work on them individually (configuring ports/envs appropriately).
+    _Wait for a minute for all containers to initialize._
+
+3.  **Access the Application**
+    - **Frontend**: [http://localhost:3000](http://localhost:3000)
+    - **API Gateway**: [http://localhost:8080](http://localhost:8080) (for API testing)
+
+---
+
+## 📂 Project Structure
+
+```
+root/
+├── frontend/                 # React + TypeScript + Vite + Tailwind
+├── services/
+│   ├── api-gateway/          # Express Proxy
+│   ├── auth-service/         # JWT Auth & Registration
+│   ├── user-service/         # User Profile Management
+│   ├── task-service/         # Task CRUD (Business Logic)
+│   └── notification-service/ # Async Event Handler
+├── shared/                   # Shared types and utilities (Planned)
+└── docker-compose.yml        # Orchestration Config
+```
+
+---
+
+## 🔌 API Endpoints
+
+All requests should be sent to the **API Gateway** (`http://localhost:8080`).
+
+### **Auth**
+
+- `POST /api/auth/register` - Create a new user.
+- `POST /api/auth/login` - Login and receive JWT.
+
+### **Users**
+
+- `GET /api/users/me` - Get current user profile (requires Bearer Token).
+
+### **Tasks**
+
+- `GET /api/tasks` - List all tasks for current user.
+- `POST /api/tasks` - Create a new task.
+- `PUT /api/tasks/:id` - Update a task.
+- `DELETE /api/tasks/:id` - Delete a task.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Frontend**: React.js, TypeScript, Tailwind CSS, Axios, React Router, Vite.
+- **Backend**: Node.js, Express.js, TypeScript.
+- **Infrastructure**: Docker, Docker Compose.
+- **Security**: JSON Web Tokens (JWT), Bcrypt.
+
+---
+
+## 🐛 Troubleshooting
+
+- **Build Failures**: If `docker-compose` fails, try running `docker system prune` to clear cache and retry.
+- **Port Conflicts**: Ensure ports `3000`, `8080`, `3001`–`3004` are free on your machine.
+- **Connection Refused**: On Windows/Mac, Docker needs a moment to spin up. If the frontend immediately fails to connect, wait 10 seconds and refresh.
+
+---
+
+**Happy Coding!** 🚀
