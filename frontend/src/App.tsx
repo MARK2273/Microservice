@@ -7,6 +7,8 @@ import {
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
+import Profile from "./components/Profile";
+import Layout from "./components/Layout";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -23,14 +25,17 @@ function App() {
             path="/register"
             element={!token ? <Register /> : <Navigate to="/dashboard" />}
           />
-          <Route
-            path="/dashboard"
-            element={token ? <Dashboard /> : <Navigate to="/login" />}
-          />
+
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+
           <Route
             path="/"
             element={<Navigate to={token ? "/dashboard" : "/login"} />}
           />
+          <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </div>
     </Router>
