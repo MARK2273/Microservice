@@ -31,8 +31,15 @@ app.use('/api/auth', createProxyMiddleware({
   target: authServiceUrl,
   changeOrigin: true,
   pathRewrite: {
-    '^/api/auth': '', // remove /api/auth prefix when forwarding
+    '^/api/auth': '',
   },
+  onProxyReq: (proxyReq, req, res) => {
+    console.log(`[Auth] Proxying ${req.method} ${req.path} -> ${authServiceUrl}`);
+  },
+  onError: (err, req, res) => {
+    console.error(`[Auth] Proxy Error: ${err.message}`);
+    res.status(500).json({ message: 'Proxy Error', error: err.message });
+  }
 }));
 
 // User Service Proxy
@@ -42,6 +49,13 @@ app.use('/api/users', createProxyMiddleware({
   pathRewrite: {
     '^/api/users': '',
   },
+  onProxyReq: (proxyReq, req, res) => {
+    console.log(`[User] Proxying ${req.method} ${req.path} -> ${userServiceUrl}`);
+  },
+  onError: (err, req, res) => {
+    console.error(`[User] Proxy Error: ${err.message}`);
+    res.status(500).json({ message: 'Proxy Error', error: err.message });
+  }
 }));
 
 // Task Service Proxy
@@ -51,6 +65,13 @@ app.use('/api/tasks', createProxyMiddleware({
   pathRewrite: {
     '^/api/tasks': '',
   },
+  onProxyReq: (proxyReq, req, res) => {
+    console.log(`[Task] Proxying ${req.method} ${req.path} -> ${taskServiceUrl}`);
+  },
+  onError: (err, req, res) => {
+    console.error(`[Task] Proxy Error: ${err.message}`);
+    res.status(500).json({ message: 'Proxy Error', error: err.message });
+  }
 }));
 
 app.listen(PORT, () => {
